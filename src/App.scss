@@ -1,0 +1,150 @@
+@import "~bootstrap/scss/bootstrap";
+
+html {
+  height: 100%;
+  background-color: #fff;
+  color: #555;
+  font-family: "Lato", "Ariel", sans-serif;
+  /*in order of preference if available*/
+  font-weight: 300;
+  font-size: 20px;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 60em;
+  min-height: 100%;
+  padding: 1em 2em;
+  border-left: solid 1px #e67e22;
+  border-right: solid 1px #e67e22;
+  font-family: "Lato", sans-serif;
+  /* Raleway */
+  text-rendering: optimizeLegibility;
+}
+
+pre {
+  background-color: #f6f8fa;
+  padding: 0.5em 1em;
+  margin: 0 0.5em;
+  border-left: solid 3px #e67e22;
+  overflow: auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Lato", sans-serif;
+}
+
+h1 {
+  text-transform: uppercase;
+  font-size: 250%;
+}
+
+h2 {
+  text-transform: uppercase;
+  font-size: 200%;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-size: 150%;
+}
+
+p {
+  font-weight: 400;
+}
+
+section:after {
+  /* add html content through css like this.  Create orange break line between heading and next element. */
+  display: block;
+  height: 2px;
+  background-color: #e67e22;
+  content: " ";
+  width: 500px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+li {
+  margin-bottom: 0.5em;
+}
+
+th {
+  /* table header */
+  text-align: left;
+  border-bottom: solid 2px black;
+  background-color: #e67e22;
+  color: white;
+  padding: 12px 12px;
+}
+
+tr:nth-child(odd) {
+  background-color: #e8e8e8;
+}
+
+td {
+  padding: 5px 12px;
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.5s;
+  color: #e67e22;
+}
+
+a:hover,
+a:active {
+  border-bottom: 2px solid #e67e22;
+  color: black;
+}
+
+.logo {
+  margin: 1em 0;
+  border-radius: 0.25em;
+  float: right;
+  background-color: #6bc6af;
+  padding: 0.5em 1em;
+}
+
+.logo:hover {
+  cursor: pointer;
+  filter: brightness(110%);
+}
+
+.logo svg {
+  height: 2em;
+}
+
+.logo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* .basics {
+margin: 0;
+padding: 0;
+background-color: coral;
+} */
+.dice {
+  color: #e67e22;
+  border: 2px solid #e67e22;
+  border-radius: 33%;
+  height: 10px;
+  width: 10px;
+  text-align: center;
+  padding: 5px;
+  float: left;
+  font-size: 80%;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS */
+  .logo svg {
+    width: 50px;
+  }
+}
