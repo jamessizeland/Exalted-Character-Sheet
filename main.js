@@ -25,16 +25,6 @@ function createMainWindow() {
     },
   });
 
-  // init store and defaults
-  const store = new Store({
-    configName: "user-settings",
-    defaults: {
-      settings: {
-        databaseKey: "",
-      },
-    },
-  });
-
   let indexPath;
 
   if (isDev && process.argv.indexOf("--noDevServer") === -1) {
@@ -75,6 +65,16 @@ function createMainWindow() {
 
   mainWindow.on("closed", () => (mainWindow = null));
 }
+
+// init store and defaults
+const store = new Store({
+  configName: "user-settings",
+  defaults: {
+    settings: {
+      databaseKey: "",
+    },
+  },
+});
 
 // send Characters to Renderer - App.js
 async function sendCharacters() {
@@ -144,10 +144,21 @@ ipcMain.on("Characters:delete", async (e, _id) => {
   }
 });
 
+// set settings
+ipcMain.on("settings:set", (e, value) => {
+  store.set("settings", value);
+  mainWindow.webContents.send("settings:get", store.get("settings"));
+});
+
 // app global events
 app.on("ready", () => {
-  connectDB(password); // Connect to Database
   createMainWindow();
+  connectDB(password); // Connect to Database
+
+  mainWindow.webContents.on("dom-ready", () => {
+    //retrieve settings a soon as the dom is ready
+    mainWindow.webContents.send("settings:get", store.get("settings"));
+  });
   initMenu(isMac, isDev, clearCharacters);
 });
 
