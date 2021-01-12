@@ -3,9 +3,11 @@ Top Level Application - Server Side
 ************************************************************/
 const path = require("path");
 const url = require("url");
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const Character = require("./models/Character.type");
-const connectDB = require("./config/db.module");
+const connectDB = require("./modules/db.module");
+const Store = require("./modules/store.module");
+const initMenu = require("./modules/menu.module");
 const password = "";
 
 /************************************************************
@@ -20,6 +22,16 @@ function createMainWindow() {
     icon: "./assets/icon.png",
     webPreferences: {
       nodeIntegration: true,
+    },
+  });
+
+  // init store and defaults
+  const store = new Store({
+    configName: "user-settings",
+    defaults: {
+      settings: {
+        databaseKey: "",
+      },
     },
   });
 
@@ -64,12 +76,12 @@ function createMainWindow() {
   mainWindow.on("closed", () => (mainWindow = null));
 }
 
-// send logs to Renderer - App.js
-async function sendLogs() {
+// send Characters to Renderer - App.js
+async function sendCharacters() {
   try {
-    const logs = await Character.find().sort({ created: 1 });
-    mainWindow.webContents.send("logs:get", JSON.stringify(logs));
-    console.log(logs);
+    const Characters = await Character.find().sort({ created: 1 });
+    mainWindow.webContents.send("Characters:get", JSON.stringify(Characters));
+    console.log(Characters);
   } catch (err) {
     reportError(err);
   }
@@ -83,10 +95,10 @@ async function reportError(error) {
   }
 }
 
-async function clearLogs() {
+async function clearCharacters() {
   try {
     await Character.deleteMany({}); //empty object arg means delete all
-    mainWindow.webContents.send("logs:clear");
+    mainWindow.webContents.send("Characters:clear");
   } catch (err) {
     reportError(err);
   }
@@ -98,7 +110,6 @@ Initialize Program
 let mainWindow;
 let isDev = false;
 const isMac = process.platform === "darwin";
-connectDB(password); // Connect to Database
 
 if (
   process.env.NODE_ENV !== undefined &&
@@ -106,58 +117,28 @@ if (
 ) {
   isDev = true;
 }
-const menu = [
-  ...(isMac ? [{ role: "appMenu" }] : []),
-  {
-    role: "fileMenu",
-  },
-  {
-    role: "editMenu",
-  },
-  {
-    label: "Logs",
-    submenu: [
-      {
-        label: "Clear Logs",
-        click: () => clearLogs(),
-      },
-    ],
-  },
-  ...(isDev
-    ? [
-        {
-          label: "Developer",
-          submenu: [
-            { role: "reload" },
-            { role: "forcereload" },
-            { type: "separator" },
-            { role: "toggledevtools" },
-          ],
-        },
-      ]
-    : []),
-];
+
 /************************************************************
 Set Listeners
 ************************************************************/
 
 // events from renderer
-ipcMain.on("logs:load", sendLogs);
+ipcMain.on("Characters:load", sendCharacters);
 
-ipcMain.on("logs:add", async (e, item) => {
+ipcMain.on("Characters:add", async (e, item) => {
   console.log(item);
   try {
     await Character.create(item);
-    sendLogs();
+    sendCharacters();
   } catch (err) {
     reportError(err);
   }
 });
 
-ipcMain.on("logs:delete", async (e, _id) => {
+ipcMain.on("Characters:delete", async (e, _id) => {
   try {
     await Character.findOneAndDelete({ _id });
-    sendLogs();
+    sendCharacters();
   } catch (err) {
     reportError(err);
   }
@@ -165,9 +146,9 @@ ipcMain.on("logs:delete", async (e, _id) => {
 
 // app global events
 app.on("ready", () => {
+  connectDB(password); // Connect to Database
   createMainWindow();
-  const mainMenu = Menu.buildFromTemplate(menu);
-  Menu.setApplicationMenu(mainMenu);
+  initMenu(isMac, isDev, clearCharacters);
 });
 
 app.on("window-all-closed", () => {
