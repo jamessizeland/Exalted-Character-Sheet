@@ -1,19 +1,18 @@
 import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { Bio } from "./components/bio.component";
-import connectDB from "./modules/db.module";
 import { Abilities } from "./components/abilities.component";
 import { Attributes } from "./components/attributes.component";
-
-import "./App.scss";
+import { ipcRenderer } from "electron";
+import "./App.css";
 
 function App() {
   // Private Data
 
-  useEffect(() => {
-    connectDB(prompt("enter password"));
-    // return () => {};
-  }, []);
+  // useEffect(() => {
+  //   connectDB(prompt("enter password"));
+  //   // return () => {};
+  // }, []);
 
   // Output
   return (

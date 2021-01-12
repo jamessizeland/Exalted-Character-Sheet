@@ -4,12 +4,9 @@ const mongoose = require("mongoose");
 
 const NumericSchema = new mongoose.Schema({
   type: Number,
-  default: 1,
-  required: true,
 });
 const textSchema = new mongoose.Schema({
   type: String,
-  trim: true,
   default: "",
   required: false,
 });
