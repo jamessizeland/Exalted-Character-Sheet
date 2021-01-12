@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Dynamic Character Sheet using React and Electron with a MongoDB backend database
+
+![UI](./img/UI1.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
